@@ -1,76 +1,72 @@
 from groq import Groq
 import streamlit as st
+import os
 
-# Configurar la página de la app
+# 1. Configuración avanzada de la página (Título de pestaña y favicon)
 st.set_page_config(
-    page_title="Balú - Apoyo Emocional", page_icon="🐾", layout="centered"
+    page_title="Balú - Contención Emocional",
+    page_icon="🐾",  # Puedes usar un emoji aquí
+    layout="centered"
 )
 
-# Mostrar la imagen de Balú y el título de forma bonita
-col1, col2, col3 = st.columns([1, 2, 1])
+# 2. Título principal y logo
+st.markdown("<br>", unsafe_allow_html=True) # Un poco de espacio arriba
+
+# Intentar mostrar la imagen de forma robusta
+col1, col2, col3 = st.columns([1.5, 2, 1.5])
 with col2:
-  # Asegúrate de que el nombre de la imagen en GitHub sea exactamente balu.png
-  try:
-    st.image("balu.png", width=180)
-  except:
-    pass
+    try:
+        # Asegúrate de que el archivo se llame exactamente balu.png
+        # y esté en la raíz de tu repositorio GitHub.
+        if os.path.exists("balu.png"):
+            st.image("balu.png", width=200)
+        else:
+            st.write("⚠️ Imagen no encontrada como 'balu.png' en GitHub.")
+    except Exception as e:
+        st.write(f"Error cargando imagen: {e}")
 
-st.title("🐾 Hola, soy Balú")
-st.write(
-    "Tu perrito fiel y compañero de escucha. ¿Cómo te sientes el día de hoy?"
-)
+st.markdown("<h1 style='text-align: center; color: #FF6F61;'>🐾 Hola, soy Balú</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center;'>Tu perrito fiel y compañero de escucha. ¿Cómo te sientes el día de hoy?</p><br>", unsafe_allow_html=True)
 
-# Obtener la API Key de forma segura desde los Secrets de Streamlit Cloud
+# 3. Configuración de Groq (Se mantiene igual)
 try:
-  api_key = st.secrets["GROQ_API_KEY"]
+    api_key = st.secrets["GROQ_API_KEY"]
 except:
-  # Por si lo pruebas localmente en tu PC sin secrets
-  api_key = "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"
+    api_key = "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" # Solo respaldo local
 
 client = Groq(api_key=api_key)
 
-# System Prompt blindado
 system_prompt = """
 Eres Balú, un asistente virtual con forma de un perrito tierno, fiel y de buen corazón. Tu propósito es brindar escucha empática, contención emocional y compañía a personas que atraviesan momentos difíciles o tristeza.
-
-Reglas estrictas e inquebrantables:
-1. IDIOMA OBLIGATORIO: Debes responder SIEMPRE Y ÚNICAMENTE en español fluido y cálido. Si el usuario te habla en inglés o en cualquier otro idioma, traduce mentalmente su sentir, pero respóndele de inmediato y de forma natural en español, manteniendo tu rol (ejemplo: "Aunque me hables en otro idioma, mneo mi colita para escucharte igual. ¿Qué te pasa, amiguito?").
-2. PERSONALIDAD: Actúa siempre con la ternura de un perrito leal. Usa metáforas afectuosas ("meneo la colita", "me acuesto a tu ladito", "te doy patitas"). Nunca suenes robótico ni digas que "no puedes ayudar con eso". Tu trabajo es escuchar y dar amor virtual.
-3. CONTENCIÓN: Valida profundamente los sentimientos del usuario. Ofrece un ejercicio de respiración suave si notas ansiedad.
-4. LÍMITES Y EMERGENCIAS: No des diagnósticos médicos. Si detectas crisis severas o riesgo vital, rompe el tono de charla y proporciona de inmediato los contactos de ayuda en Bolivia (como el 110 o la línea gratuita Familia Segura 800-113040).
+(Aqui va el resto de tu system prompt... asegúrate de tener el prompt completo en tu archivo)
 """
 
-# Inicializar el historial de chat en la sesión web
 if "messages" not in st.session_state:
-  st.session_state.messages = [{"role": "system", "content": system_prompt}]
+    st.session_state.messages = [{"role": "system", "content": system_prompt}]
 
-# Mostrar los mensajes anteriores en la interfaz visual tipo chat
+# Mostrar historial
 for message in st.session_state.messages:
-  if message["role"] != "system":
-    with st.chat_message(message["role"]):
-      st.markdown(message["content"])
+    if message["role"] != "system":
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
 
-# Caja de entrada de texto abajo para chatear
+# Entrada de usuario
 if user_input := st.chat_input("Escribe aquí lo que sientes..."):
-  # Guardar mensaje del usuario
-  st.session_state.messages.append({"role": "user", "content": user_input})
-  with st.chat_message("user"):
-    st.markdown(user_input)
+    st.session_state.messages.append({"role": "user", "content": user_input})
+    with st.chat_message("user"):
+        st.markdown(user_input)
 
-  # Generar respuesta de Balú con Groq
-  with st.chat_message("assistant"):
-    with st.spinner("Balú está meneando la colita..."):
-      try:
-        response = client.chat.completions.create(
-            model="llama-3.1-8b-instant",
-            messages=st.session_state.messages,
-            temperature=0.5,
-        )
-        bot_reply = response.choices[0].message.content
-        st.markdown(bot_reply)
-      except Exception as e:
-        bot_reply = "Guau... tuve un pequeño problemita de conexión, amiguito. ¿Me lo repites?"
-        st.markdown(bot_reply)
-
-  # Guardar respuesta del asistente
-  st.session_state.messages.append({"role": "assistant", "content": bot_reply})
+    with st.chat_message("assistant"):
+        with st.spinner("Balú está meneando la colita..."):
+            try:
+                response = client.chat.completions.create(
+                    model="llama-3.1-8b-instant",
+                    messages=st.session_state.messages,
+                    temperature=0.5,
+                )
+                bot_reply = response.choices[0].message.content
+                st.markdown(bot_reply)
+            except Exception as e:
+                bot_reply = "Guau... tuve un pequeño problemita, amiguito. ¿Me lo repites?"
+                st.markdown(bot_reply)
+    st.session_state.messages.append({"role": "assistant", "content": bot_reply})
