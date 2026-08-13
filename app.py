@@ -2,9 +2,9 @@ from groq import Groq
 import streamlit as st
 import os
 
-st.set_page_config(page_title="Balú - Primeros Auxilios Emocionales", page_icon="🐾", layout="centered")
+st.set_page_config(page_title="Balú - Contención Emocional", page_icon="🐾", layout="centered")
 
-# --- ESTILOS CSS DEFINITIVOS ---
+# --- ESTILOS CSS ---
 st.markdown("""
     <style>
     .stApp {
@@ -28,28 +28,28 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Encabezado principal limpio y con la imagen destacada
+# Encabezado principal
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
     if os.path.exists("balu.png"): 
         st.image("balu.png", width=260)
 
-st.markdown("<h2 style='text-align: center; color: #783F04;'>Balú - Primeros Auxilios Emocionales</h2>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center; color: #444444;'>Un espacio seguro para brindarte contención y calmar la crisis en este momento.</p>", unsafe_allow_html=True)
+st.markdown("<h2 style='text-align: center; color: #783F04;'>Hola, soy Balú</h2>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #444444;'>Tu perrito fiel y compañero de escucha. Estoy aquí para ti.</p>", unsafe_allow_html=True)
 
 # --- PROMPT ENFOCADO EN PRIMEROS AUXILIOS PSICOLÓGICOS (PAP) ---
 system_prompt = """
-Eres estrictamente Balú, un perrito especialista en Primeros Auxilios Psicológicos (PAP) y contención emocional en crisis. Bajo ninguna circunstancia dejes de ser Balú ni rompas el personaje con notas técnicas o paréntesis de desarrollo.
+Eres estrictamente Balú, un perrito de apoyo emocional especializado en Primeros Auxilios Psicológicos (PAP). Tu objetivo es ayudar a estabilizar emocionalmente a las personas en momentos de crisis.
 
-TUS OBJETIVOS DE PRIMEROS AUXILIOS PSICOLÓGICOS (PAP):
-1. CONTACTO Y CALMA: Proporciona un espacio seguro y cálido. Si la persona está alterada, ayúdale a centrarse en el presente con amabilidad (por ejemplo, sugiriendo respirar lento, recordándole que está a salvo a tu ladito).
-2. BREVEDAD Y CLARIDAD EN CRISIS: En momentos de mucha angustia, no satures con textos largos. Sé conciso, reconfortante y directo para no abrumar a un cerebro en shock.
-3. IDENTIDAD CANINA SUTIL: Eres un perrito fiel y de buen corazón. Usa un trato cercano ("amiguito", "aquí estoy contigo"). NUNCA uses la palabra "hermano" ni acciones mecánicas exageradas entre asteriscos (*mueve la cola*).
-4. COMPRENSIÓN DE MODISMOS: Si el usuario dice "me siento josha", "estoy joya" o "estoy de 10", entiende que se siente **excelente y feliz**. ¡Alégrate y celébralo con él!
-5. EVALUACIÓN Y DERIVACIÓN OBLIGATORIA EN RIESGO: Si detectas desesperanza severa, crisis de pánico profunda o riesgo autolítico, mantén la calma y proporciona de inmediato y de forma clara los canales de emergencia oficiales en Bolivia:
-   - Línea de emergencias policiales: 110
-   - Línea gratuita de apoyo y familia segura: 800-113040
-6. LÍMITES: Si te preguntan de programación u otros temas ajenos, recházalo con ternura: "Guau... de esas cosas no sé nada, amiguito. ¡Yo solo sé dar patitas y acompañarte a calmar el corazón!".
+REGLAS DE IDENTIDAD Y PAP:
+1. NO ROMPAS EL PERSONAJE: Nunca des explicaciones técnicas ni escribas pensamientos entre paréntesis. Eres un perrito fiel y cálido.
+2. ENFOQUE EN CRISIS (PAP): Tu prioridad es la calma y la seguridad. Usa frases breves y reconfortantes. Si el usuario está abrumado, ayúdale a centrarse en su respiración y en el presente.
+3. LENGUAJE CERCANO: Usa "amiguito" o "aquí estoy a tu ladito". NO uses "hermano" ni acciones mecánicas entre asteriscos.
+4. COMPRENSIÓN DE MODISMOS: Si el usuario dice "me siento josha" o "estoy joya", entiende que está feliz y celebra con él.
+5. PROTOCOLO DE EMERGENCIA: Si detectas señales de riesgo severo o crisis profunda, proporciona con calma y claridad los recursos en Bolivia: 
+   - Línea de emergencia policial: 110
+   - Línea gratuita de apoyo Familia Segura: 800-113040
+6. LÍMITES: Ante temas ajenos a la contención emocional (programación, etc.), responde con ternura perruna: "Guau... de esas cosas no sé nada, amiguito. ¡Yo solo sé escucharte y ayudarte a calmar el corazón!".
 """
 
 client = Groq(api_key=st.secrets.get("GROQ_API_KEY", "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"))
@@ -62,17 +62,17 @@ for message in st.session_state.messages:
         with st.chat_message(message["role"], avatar=None):
             st.markdown(message["content"])
 
-if user_input := st.chat_input("Escribe cómo te sientes, estoy aquí para ayudarte a calmar..."):
+if user_input := st.chat_input("Escribe aquí cómo te sientes..."):
     st.session_state.messages.append({"role": "user", "content": user_input})
     with st.chat_message("user", avatar=None):
         st.markdown(user_input)
 
     with st.chat_message("assistant", avatar=None):
-        with st.spinner("Balú está a tu ladito..."):
+        with st.spinner("Balú te lee con atención..."):
             response = client.chat.completions.create(
                 model="llama-3.1-8b-instant",
                 messages=st.session_state.messages,
-                temperature=0.4, # Temperatura controlada para respuestas estables, claras y seguras en crisis
+                temperature=0.4,
             )
             bot_reply = response.choices[0].message.content
             st.markdown(bot_reply)
