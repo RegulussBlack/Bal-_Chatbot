@@ -34,7 +34,6 @@ with col2:
     if os.path.exists("balu.png"): 
         st.image("balu.png", width=260)
 
-st.markdown("<h2 style='text-align: center; color: #783F04;'>Hola, soy Balú</h2>", unsafe_array_html=True if 'unsafe_array_html' in globals() else "")
 st.markdown("<h2 style='text-align: center; color: #783F04;'>Hola, soy Balú</h2>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center; color: #444444;'>Tu perrito fiel y compañero de escucha. Estoy aquí para ti.</p>", unsafe_allow_html=True)
 
