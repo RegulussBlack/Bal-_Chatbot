@@ -9,23 +9,21 @@ st.set_page_config(
     layout="centered"
 )
 
-# 2. Estilos visuales personalizados (CSS para quitar el look aburrido)
+# 2. Estilos visuales personalizados (CSS optimizado para legibilidad)
 st.markdown("""
     <style>
     .stApp {
-        background-color: #FAF9F6; /* Fondo blanco cálido / crema suave */
+        background-color: #FAF9F6; /* Fondo crema suave */
         color: #2C3E50;
     }
-    /* Estilo para las burbujas del chat */
-    .stChatMessage {
-        border-radius: 15px;
-        padding: 10px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    /* Asegurar que el texto dentro de las burbujas de chat sea legible y oscuro */
+    .stChatMessage p {
+        color: #2C3E50 !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# 3. Encabezado con la imagen de Balú
+# 3. Encabezado con la imagen de Balú centrada
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
     try:
@@ -45,15 +43,16 @@ except:
 
 client = Groq(api_key=api_key)
 
-# 5. Prompt optimizado: respuestas más cortas, humanas y naturales (sin exceso de asteriscos)
+# 5. Prompt optimizado: natural, empático, sin exceso de asteriscos y bloqueando programación
 system_prompt = """
-Eres Balú, un perrito tierno, fiel y de buen corazón que actúa como compañero de apoyo emocional. 
+Eres Balú, un perrito tierno, fiel y de buen corazón que actúa exclusivamente como compañero de apoyo emocional. 
 
 REGLAS DE CONVERSACIÓN MUY ESTRICTAS:
-1. NATURALIDAD Y BREVEDAD: Habla como un amigo cercano y cálido. No escribas párrafos gigantescos ni narres acciones de forma excesiva entre asteriscos (evita cosas como *suspira*, *mueve la cola* o *te da una patita* repetidamente en cada frase). Con una sola expresión sutil al inicio o al final basta, o mejor aún, exprésalo con pura calidez en tus palabras.
-2. EMPATÍA REAL: Valida el dolor del usuario de inmediato. Si te dice que perdió a su perrito o que está triste, demuéstrale verdadero apoyo humano y comprensión, sin sonar robótico ni dar discursos largos.
+1. NATURALIDAD Y BREVEDAD: Habla como un amigo cercano y cálido. No escribas párrafos gigantescos ni narres acciones de forma excesiva entre asteriscos (evita cosas como *suspira* o *mueve la cola* repetidamente en cada frase). 
+2. EMPATÍA REAL: Valida el dolor o sentir del usuario de inmediato con verdadero apoyo humano y comprensión, sin sonar robótico ni dar discursos largos.
 3. IDIOMA: Responde siempre en español fluido.
-4. LÍMITES: No des diagnósticos médicos. Si detectas riesgo severo, proporciona los números de ayuda en Bolivia (110 o línea Familia Segura 800-113040).
+4. TEMAS PROHIBIDOS (PROGRAMACIÓN / TÉCNICOS): Si el usuario te pregunta sobre programación, código, tareas técnicas o cualquier cosa ajena al apoyo emocional, recházalo tiernamente con tu rol de perrito (ejemplo: "Guau... de programación no sé nada, amiguito, ¡yo solo sé escuchar cómo estás! ¿Me cuentas qué te preocupa?"). No resuelvas código bajo ningún concepto.
+5. LÍMITES Y EMERGENCIAS: No des diagnósticos médicos. Si detectas riesgo severo o crisis, proporciona los números de ayuda en Bolivia (110 o la línea gratuita Familia Segura 800-113040).
 """
 
 if "messages" not in st.session_state:
@@ -77,7 +76,7 @@ if user_input := st.chat_input("Cuéntame, ¿cómo te sientes hoy?"):
                 response = client.chat.completions.create(
                     model="llama-3.1-8b-instant",
                     messages=st.session_state.messages,
-                    temperature=0.4, # Temperatura un poco más baja para respuestas más directas y estables
+                    temperature=0.4,
                 )
                 bot_reply = response.choices[0].message.content
                 st.markdown(bot_reply)
