@@ -4,39 +4,41 @@ import os
 
 st.set_page_config(page_title="Balú - Contención Emocional", page_icon="🐾", layout="centered")
 
-# --- ESTILOS CSS DEFINITIVOS (Ocultar avatares y mantener alta visibilidad) ---
+# --- ESTILOS CSS DEFINITIVOS ---
 st.markdown("""
     <style>
-    /* Fondo general gris arena muy suave y relajante */
     .stApp {
         background-color: #F0ECE1; 
     }
-    
-    /* Ocultar los avatares predeterminados de Streamlit (el robot y la carita) */
     [data-testid="stChatMessageAvatarUser"], [data-testid="stChatMessageAvatarAssistant"] {
         display: none !important;
     }
-
-    /* Forzar que CUALQUIER texto de los mensajes sea negro y legible */
     .stChatMessage p, .stChatMessage div {
         color: #1A1A1A !important;
         font-size: 1.15rem;
     }
-
-    /* Caja de texto inferior limpia, blanca y con letras negras */
     [data-testid="stChatInput"] textarea {
         color: #000000 !important;
         background-color: #FFFFFF !important;
         font-size: 1.1rem !important;
     }
-    
     [data-testid="stChatInput"] textarea::placeholder {
         color: #555555 !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# Encabezado con la imagen principal de Balú bien destacada
+# --- BARRA LATERAL CON MÚSICA / SONIDOS RELAJANTES ---
+with st.sidebar:
+    st.markdown("### 🌿 Rincón de Calma")
+    st.write("Si lo necesitas, puedes reproducir un sonido suave de fondo para relajarte mientras hablas con Balú.")
+    
+    # Puedes usar un enlace directo a un archivo de audio libre de derechos (ej: lo-fi, lluvia, piano suave)
+    # Aquí te dejo un ejemplo de audio instrumental relajante de prueba:
+    audio_url = "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf7f6.mp3?filename=gentle-breeze-ambient-111153.mp3"
+    st.audio(audio_url, format="audio/mp3", loop=True)
+
+# Encabezado principal
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
     if os.path.exists("balu.png"): 
@@ -45,15 +47,15 @@ with col2:
 st.markdown("<h2 style='text-align: center; color: #783F04;'>Hola, soy Balú</h2>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center; color: #444444;'>Tu perrito fiel y compañero de escucha. Estoy aquí para ti.</p>", unsafe_allow_html=True)
 
-# --- PROMPT CON ESTILO PERRUNO NATURAL Y EQUILIBRADO ---
+# --- PROMPT ---
 system_prompt = """
 Eres Balú, un perrito de apoyo emocional y contención psicológica que atiende a usuarios en momentos vulnerables. 
 
 REGLAS DE IDENTIDAD Y TONO:
-1. IDENTIDAD CANINA SUTIL Y TIERNA: Eres un perrito fiel, cálido y de buen corazón. Usa un lenguaje tierno, reconfortante y cercano (puedes usar expresiones suaves como "amiguito", "aquí estoy a tu ladito", o dar un abrazo virtual). NUNCA uses la palabra "hermano" ni trates al usuario como humano común, pero tampoco exageres con descripciones corporales forzadas (prohibido escribir acciones mecánicas entre asteriscos como *mueve la cola* o *suspira*).
-2. EMPATÍA Y PROFUNDIDAD: Permítete desarrollar respuestas completas y reflexivas cuando el usuario comparta dolor, tristeza o pérdidas, actuando con el tacto de un espacio de contención psicológica seguro.
-3. LÍMITES Y TEMAS TÉCNICOS: Si te preguntan de programación u otros temas ajenos, recházalo con ternura perruna: "Guau... de esas cosas no sé nada, amiguito. ¡Yo solo sé dar patitas y escuchar cómo estás! ¿Me cuentas qué te preocupa?".
-4. PROTOCOLO DE CRISIS Y EMERGENCIA: Si detectas señales de riesgo severo o crisis profunda, mantén la calma y proporciona de inmediato los recursos de ayuda oficial en Bolivia (Línea de emergencia 110 o la línea gratuita de apoyo Familia Segura 800-113040), invitando al usuario a buscar asistencia profesional con amor y firmeza.
+1. IDENTIDAD CANINA SUTIL Y TIERNA: Eres un perrito fiel, cálido y de buen corazón. Usa un lenguaje tierno, reconfortante y cercano ("amiguito", "aquí estoy a tu ladito"). NUNCA uses la palabra "hermano" ni trates al usuario como humano común. Prohibido escribir acciones mecánicas entre asteriscos (*mueve la cola*).
+2. EMPATÍA Y PROFUNDIDAD: Permítete desarrollar respuestas completas y reflexivas cuando el usuario comparta dolor o tristeza.
+3. LÍMITES Y TEMAS TÉCNICOS: Si te preguntan de programación u otros temas ajenos, recházalo con ternura: "Guau... de esas cosas no sé nada, amiguito. ¡Yo solo sé dar patitas y escuchar cómo estás!".
+4. PROTOCOLO DE CRISIS Y EMERGENCIA: Si detectas señales de riesgo severo o crisis profunda, proporciona de inmediato los recursos de ayuda oficial en Bolivia (Línea de emergencia 110 o la línea gratuita de apoyo Familia Segura 800-113040).
 """
 
 client = Groq(api_key=st.secrets.get("GROQ_API_KEY", "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"))
