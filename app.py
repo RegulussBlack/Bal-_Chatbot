@@ -4,10 +4,10 @@ import os
 
 st.set_page_config(page_title="Balú - Contención Emocional", page_icon="🐾", layout="centered")
 
-# --- ESTILOS CSS DEFINITIVOS PARA ALTA VISIBILIDAD ---
+# --- ESTILOS CSS DEFINITIVOS ---
 st.markdown("""
     <style>
-    /* Fondo general gris arena muy suave (nada de blancos agresivos) */
+    /* Fondo general gris arena muy suave y relajante */
     .stApp {
         background-color: #F0ECE1; 
     }
@@ -25,18 +25,17 @@ st.markdown("""
         font-size: 1.1rem !important;
     }
     
-    /* Color del texto guía dentro de la caja */
     [data-testid="stChatInput"] textarea::placeholder {
         color: #555555 !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# Encabezado
+# Encabezado con la imagen más grande (ancho de 260px)
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
     if os.path.exists("balu.png"): 
-        st.image("balu.png", width=140)
+        st.image("balu.png", width=260)
 
 st.markdown("<h2 style='text-align: center; color: #783F04;'>Hola, soy Balú</h2>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center; color: #444444;'>Tu perrito fiel y compañero de escucha. Estoy aquí para ti.</p>", unsafe_allow_html=True)
